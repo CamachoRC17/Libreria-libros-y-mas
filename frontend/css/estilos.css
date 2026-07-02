@@ -1,0 +1,25 @@
+body{
+background:#f4f6f9;
+}
+
+.fondo{
+background:linear-gradient(to right,#007bff,#00c6ff);
+height:100vh;
+}
+
+.card{
+border-radius:15px;
+}
+
+.card-body h2{
+font-size:50px;
+color:#007bff;
+}
+
+.btn{
+border-radius:10px;
+}
+
+table{
+background:white;
+}
