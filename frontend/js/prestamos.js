@@ -99,16 +99,6 @@ function realizarPrestamo() {
 
 }
 
-function formatearFecha(fecha) {
-
-    if (!fecha) return "-";
-
-    let partes = fecha.slice(0, 10).split("-");
-
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-
-}
-
 function mostrarPrestamos() {
 
     fetch(API_PRESTAMOS)
@@ -122,17 +112,17 @@ function mostrarPrestamos() {
             prestamos.forEach(prestamo => {
 
                 let botonAccion = prestamo.estado === "Prestado"
-                    ? `<button class="btn btn-warning btn-sm" onclick="devolverLibro(${prestamo.id})">Devolver</button>`
+                    ? `<button class="btn btn-editar btn-sm" onclick="devolverLibro(${prestamo.id})">Devolver</button>`
                     : `<span class="text-muted">—</span>`;
 
                 tabla.innerHTML += `
                 <tr>
-                    <td>${prestamo.id}</td>
-                    <td>${prestamo.usuario}</td>
-                    <td>${prestamo.libro}</td>
-                    <td>${formatearFecha(prestamo.fechaPrestamo)}</td>
-                    <td>${prestamo.estado}</td>
-                    <td>${botonAccion}</td>
+                    <td data-label="ID">${prestamo.id}</td>
+                    <td data-label="Usuario">${prestamo.usuario}</td>
+                    <td data-label="Libro">${prestamo.libro}</td>
+                    <td data-label="Fecha">${formatearFecha(prestamo.fechaPrestamo)}</td>
+                    <td data-label="Estado">${prestamo.estado}</td>
+                    <td data-label="Acción">${botonAccion}</td>
                 </tr>
                 `;
 
@@ -159,5 +149,15 @@ function devolverLibro(id) {
         .catch(error => {
             console.log("Error al devolver libro:", error);
         });
+
+}
+
+function formatearFecha(fecha) {
+
+    if (!fecha) return "-";
+
+    let partes = fecha.slice(0, 10).split("-");
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
 
 }
