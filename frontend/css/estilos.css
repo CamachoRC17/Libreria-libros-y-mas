@@ -1,25 +1,417 @@
-body{
-background:#f4f6f9;
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --azul-oscuro: #0B2545;
+    --azul-medio: #13315C;
+    --azul-brillante: #1E56A0;
+    --dorado: #C9A227;
+    --fondo: #F4F6F9;
+    --texto-oscuro: #1B2430;
+    --borde: #E1E5EB;
 }
 
-.fondo{
-background:linear-gradient(to right,#007bff,#00c6ff);
-height:100vh;
+* {
+    box-sizing: border-box;
 }
 
-.card{
-border-radius:15px;
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--fondo);
+    color: var(--texto-oscuro);
+    margin: 0;
 }
 
-.card-body h2{
-font-size:50px;
-color:#007bff;
+h1, h2, h3, .titulo-pagina {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.01em;
 }
 
-.btn{
-border-radius:10px;
+/* ===== SIDEBAR ===== */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    background: linear-gradient(180deg, var(--azul-oscuro), var(--azul-medio));
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    transition: transform 0.3s ease;
 }
 
-table{
-background:white;
+.sidebar-brand {
+    padding: 28px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(201,162,39,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.brand-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    color: #fff;
+    font-size: 17px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+    flex-grow: 1;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+}
+
+.nav-item.active {
+    background: rgba(201,162,39,0.12);
+    border-left-color: var(--dorado);
+    color: #fff;
+    font-weight: 600;
+}
+
+.nav-icon {
+    font-size: 18px;
+    width: 22px;
+    text-align: center;
+}
+
+.btn-logout {
+    margin: 20px;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.85);
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background: rgba(220,53,69,0.85);
+    border-color: transparent;
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+
+.main-content {
+    margin-left: 260px;
+    min-height: 100vh;
+    padding: 40px 48px;
+}
+
+.titulo-pagina {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--azul-oscuro);
+    margin-bottom: 32px;
+}
+
+/* ===== TARJETAS DE ESTADÍSTICAS ===== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(11,37,69,0.06);
+    border-top: 4px solid var(--azul-brillante);
+}
+
+.icon-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 14px;
+}
+
+.icon-badge.azul {
+    background: rgba(30,86,160,0.12);
+}
+
+.icon-badge.dorado {
+    background: rgba(201,162,39,0.15);
+}
+
+.icon-badge.oscuro {
+    background: rgba(11,37,69,0.10);
+}
+
+.stat-card .stat-numero {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--azul-oscuro);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-card .stat-label {
+    font-size: 13px;
+    color: #6B7688;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+/* ===== ACCESOS RÁPIDOS ===== */
+
+.accesos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.acceso-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--texto-oscuro);
+    box-shadow: 0 2px 10px rgba(11,37,69,0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.acceso-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(11,37,69,0.12);
+    color: var(--azul-brillante);
+}
+
+.acceso-card .icon-badge {
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+}
+
+/* ===== TOGGLE MÓVIL ===== */
+
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1100;
+    background: var(--azul-oscuro);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 991px) {
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.abierto {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 80px 20px 32px;
+    }
+
+    .sidebar-toggle {
+        display: block;
+    }
+
+    .sidebar-overlay.activo {
+        display: block;
+    }
+
+}
+
+/* ===== PANELES Y TABLAS (páginas internas) ===== */
+
+.card-panel {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(11,37,69,0.06);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.buscador-wrapper {
+    margin-bottom: 24px;
+}
+
+.btn-agregar {
+    background: var(--azul-brillante);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-agregar:hover {
+    background: var(--azul-oscuro);
+    color: #fff;
+}
+
+.tabla-datos {
+    margin-bottom: 0;
+}
+
+.tabla-datos thead th {
+    background-color: var(--azul-oscuro) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    border: none;
+    padding: 14px 12px;
+}
+
+.tabla-datos tbody td {
+    padding: 14px 12px;
+    vertical-align: middle;
+    border-color: var(--borde);
+}
+
+.tabla-datos tbody tr:hover {
+    background: rgba(30,86,160,0.03);
+}
+
+.btn-editar {
+    background: var(--dorado);
+    color: #fff;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-editar:hover {
+    background: #A8871F;
+    color: #fff;
+}
+
+.btn-eliminar {
+    background: #C0392B;
+    color: #fff;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-eliminar:hover {
+    background: #922B21;
+    color: #fff;
+}
+
+/* ===== TABLAS RESPONSIVE (modo tarjeta en móvil) ===== */
+
+@media (max-width: 767px) {
+
+    .tabla-datos thead {
+        display: none;
+    }
+
+    .tabla-datos, .tabla-datos tbody, .tabla-datos tr, .tabla-datos td {
+        display: block;
+        width: 100%;
+    }
+
+    .tabla-datos tr {
+        margin-bottom: 16px;
+        border: 1px solid var(--borde);
+        border-radius: 8px;
+        padding: 8px 12px;
+        box-shadow: 0 2px 8px rgba(11,37,69,0.05);
+    }
+
+    .tabla-datos td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 4px;
+        border: none;
+        border-bottom: 1px solid var(--borde);
+        text-align: right;
+    }
+
+    .tabla-datos td:last-child {
+        border-bottom: none;
+        gap: 8px;
+    }
+
+    .tabla-datos td:last-child::before {
+        margin-right: auto;
+    }
+
+    .tabla-datos td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--azul-oscuro);
+        text-align: left;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
 }

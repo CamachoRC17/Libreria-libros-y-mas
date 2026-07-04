@@ -1,28 +1,40 @@
-function iniciarSesion(){
+const API_LOGIN = "http://localhost:3000/api/login";
 
-let usuario =
-document.getElementById("usuario").value;
+function iniciarSesion() {
 
-let password =
-document.getElementById("password").value;
+    let usuario = document.getElementById("usuario").value;
+    let password = document.getElementById("password").value;
 
-if(usuario=="admin" && password=="12345"){
+    if (usuario === "" || password === "") {
+        document.getElementById("mensaje").innerHTML = "Complete todos los campos";
+        return;
+    }
 
-localStorage.setItem(
-"sesion",
-"activa"
-);
+    fetch(API_LOGIN, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usuario, password })
+    })
+        .then(respuesta => {
 
-window.location.href="index.html";
+            if (!respuesta.ok) {
+                throw new Error("Credenciales incorrectas");
+            }
 
-}
-else{
+            return respuesta.json();
 
-document.getElementById(
-"mensaje"
-).innerHTML=
-"Usuario o contraseña incorrectos";
+        })
+        .then(() => {
 
-}
+            localStorage.setItem("sesion", "activa");
+
+            window.location.href = "index.html";
+
+        })
+        .catch(error => {
+
+            document.getElementById("mensaje").innerHTML = "Usuario o contraseña incorrectos";
+
+        });
 
 }

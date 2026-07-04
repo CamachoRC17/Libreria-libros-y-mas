@@ -56,26 +56,34 @@ function mostrarLibros() {
 
 }
 
-function buscarLibro() {
-
-    let texto = document.getElementById("buscar").value.toLowerCase();
-
-    let filtrados = libros.filter(libro =>
-        libro.titulo.toLowerCase().includes(texto)
-    );
-
-    renderizarTabla(filtrados);
-
-}
-
 function editarLibro(id) {
 
     let libro = libros.find(l => l.id == id);
 
-    let titulo = prompt("Título", libro.titulo);
-    let autor = prompt("Autor", libro.autor);
-    let categoria = prompt("Categoría", libro.categoria);
-    let anio = prompt("Año", libro.anio);
+    document.getElementById("editId").value = libro.id;
+    document.getElementById("editTitulo").value = libro.titulo;
+    document.getElementById("editAutor").value = libro.autor;
+    document.getElementById("editCategoria").value = libro.categoria;
+    document.getElementById("editAnio").value = libro.anio;
+
+    let modal = new bootstrap.Modal(document.getElementById("modalEditarLibro"));
+
+    modal.show();
+
+}
+
+function guardarEdicionLibro() {
+
+    let id = document.getElementById("editId").value;
+    let titulo = document.getElementById("editTitulo").value;
+    let autor = document.getElementById("editAutor").value;
+    let categoria = document.getElementById("editCategoria").value;
+    let anio = document.getElementById("editAnio").value;
+
+    if (titulo === "" || autor === "" || categoria === "" || anio === "") {
+        alert("Complete todos los campos");
+        return;
+    }
 
     fetch(`${API_URL}/${id}`, {
         method: "PUT",
@@ -84,7 +92,13 @@ function editarLibro(id) {
     })
         .then(respuesta => respuesta.json())
         .then(() => {
+
             mostrarLibros();
+
+            let modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarLibro"));
+
+            modal.hide();
+
         })
         .catch(error => {
             console.log("Error al actualizar libro:", error);
@@ -121,15 +135,15 @@ function renderizarTabla(listaLibros) {
 
         tabla.innerHTML += `
         <tr>
-            <td>${libro.id}</td>
-            <td>${libro.titulo}</td>
-            <td>${libro.autor}</td>
-            <td>${libro.categoria}</td>
-            <td>${libro.anio}</td>
-            <td>${libro.estado}</td>
-            <td>
-                <button class="btn btn-warning btn-sm" onclick="editarLibro(${libro.id})">Editar</button>
-                <button class="btn btn-danger btn-sm" onclick="eliminarLibro(${libro.id})">Eliminar</button>
+            <td data-label="ID">${libro.id}</td>
+            <td data-label="Título">${libro.titulo}</td>
+            <td data-label="Autor">${libro.autor}</td>
+            <td data-label="Categoría">${libro.categoria}</td>
+            <td data-label="Año">${libro.anio}</td>
+            <td data-label="Estado">${libro.estado}</td>
+            <td data-label="Acciones">
+                <button class="btn btn-editar btn-sm" onclick="editarLibro(${libro.id})">Editar</button>
+                <button class="btn btn-eliminar btn-sm" onclick="eliminarLibro(${libro.id})">Eliminar</button>
             </td>
         </tr>
         `;
@@ -137,11 +151,23 @@ function renderizarTabla(listaLibros) {
 
 }
 
-function limpiarCampos(){
+function buscarLibro() {
 
-    document.getElementById("titulo").value="";
-    document.getElementById("autor").value="";
-    document.getElementById("categoria").value="";
-    document.getElementById("anio").value="";
+    let texto = document.getElementById("buscar").value.toLowerCase();
+
+    let filtrados = libros.filter(libro =>
+        libro.titulo.toLowerCase().includes(texto)
+    );
+
+    renderizarTabla(filtrados);
+
+}
+
+function limpiarCampos() {
+
+    document.getElementById("titulo").value = "";
+    document.getElementById("autor").value = "";
+    document.getElementById("categoria").value = "";
+    document.getElementById("anio").value = "";
 
 }

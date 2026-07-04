@@ -1,4 +1,6 @@
-let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+const API_URL = "http://localhost:3000/api/usuarios";
+
+let usuarios = [];
 
 mostrarUsuarios();
 
@@ -8,167 +10,153 @@ function agregarUsuario() {
     let documento = document.getElementById("documento").value;
     let correo = document.getElementById("correo").value;
 
-    if(nombre==="" || documento==="" || correo===""){
+    if (nombre === "" || documento === "" || correo === "") {
         alert("Complete todos los campos");
         return;
     }
 
-    let usuario = {
-        id: Date.now(),
-        nombre,
-        documento,
-        correo
-    };
+    let usuario = { nombre, documento, correo };
 
-    usuarios.push(usuario);
+    fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(usuario)
+    })
+        .then(respuesta => respuesta.json())
+        .then(() => {
+            mostrarUsuarios();
+            limpiarCampos();
+        })
+        .catch(error => {
+            console.log("Error al crear usuario:", error);
+        });
 
-    guardarUsuarios();
-
-    mostrarUsuarios();
-
-    limpiarCampos();
 }
 
-function mostrarUsuarios(){
+function mostrarUsuarios() {
+
+    fetch(API_URL)
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+
+            usuarios = datos;
+
+            renderizarTabla(usuarios);
+
+        })
+        .catch(error => {
+            console.log("Error al obtener usuarios:", error);
+        });
+
+}
+
+function editarUsuario(id) {
+
+    let usuario = usuarios.find(u => u.id == id);
+
+    document.getElementById("editId").value = usuario.id;
+    document.getElementById("editNombre").value = usuario.nombre;
+    document.getElementById("editDocumento").value = usuario.documento;
+    document.getElementById("editCorreo").value = usuario.correo;
+
+    let modal = new bootstrap.Modal(document.getElementById("modalEditarUsuario"));
+
+    modal.show();
+
+}
+
+function guardarEdicionUsuario() {
+
+    let id = document.getElementById("editId").value;
+    let nombre = document.getElementById("editNombre").value;
+    let documento = document.getElementById("editDocumento").value;
+    let correo = document.getElementById("editCorreo").value;
+
+    if (nombre === "" || documento === "" || correo === "") {
+        alert("Complete todos los campos");
+        return;
+    }
+
+    fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, documento, correo })
+    })
+        .then(respuesta => respuesta.json())
+        .then(() => {
+
+            mostrarUsuarios();
+
+            let modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarUsuario"));
+
+            modal.hide();
+
+        })
+        .catch(error => {
+            console.log("Error al actualizar usuario:", error);
+        });
+
+}
+
+function eliminarUsuario(id) {
+
+    if (confirm("¿Eliminar usuario?")) {
+
+        fetch(`${API_URL}/${id}`, {
+            method: "DELETE"
+        })
+            .then(respuesta => respuesta.json())
+            .then(() => {
+                mostrarUsuarios();
+            })
+            .catch(error => {
+                console.log("Error al eliminar usuario:", error);
+            });
+
+    }
+
+}
+
+function renderizarTabla(listaUsuarios) {
 
     let tabla = document.getElementById("tablaUsuarios");
 
-    tabla.innerHTML="";
+    tabla.innerHTML = "";
 
-    usuarios.forEach(usuario => {
+    listaUsuarios.forEach(usuario => {
 
         tabla.innerHTML += `
-
         <tr>
-
-        <td>${usuario.id}</td>
-        <td>${usuario.nombre}</td>
-        <td>${usuario.documento}</td>
-        <td>${usuario.correo}</td>
-
-        <td>
-
-        <button
-        class="btn btn-warning btn-sm"
-        onclick="editarUsuario(${usuario.id})">
-
-        Editar
-
-        </button>
-
-        <button
-        class="btn btn-danger btn-sm"
-        onclick="eliminarUsuario(${usuario.id})">
-
-        Eliminar
-
-        </button>
-
-        </td>
-
+            <td data-label="ID">${usuario.id}</td>
+            <td data-label="Nombre">${usuario.nombre}</td>
+            <td data-label="Documento">${usuario.documento}</td>
+            <td data-label="Correo">${usuario.correo}</td>
+            <td data-label="Acciones">
+                <button class="btn btn-editar btn-sm" onclick="editarUsuario(${usuario.id})">Editar</button>
+                <button class="btn btn-eliminar btn-sm" onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
+            </td>
         </tr>
-
         `;
     });
 
 }
 
-function editarUsuario(id){
+function buscarUsuario() {
 
-    let usuario = usuarios.find(u => u.id == id);
-
-    usuario.nombre = prompt("Nombre", usuario.nombre);
-    usuario.documento = prompt("Documento", usuario.documento);
-    usuario.correo = prompt("Correo", usuario.correo);
-
-    guardarUsuarios();
-
-    mostrarUsuarios();
-
-}
-
-function eliminarUsuario(id){
-
-    if(confirm("¿Eliminar usuario?")){
-
-        usuarios = usuarios.filter(
-            usuario => usuario.id != id
-        );
-
-        guardarUsuarios();
-
-        mostrarUsuarios();
-
-    }
-
-}
-
-function buscarUsuario(){
-
-    let texto =
-    document.getElementById("buscar")
-    .value.toLowerCase();
+    let texto = document.getElementById("buscar").value.toLowerCase();
 
     let filtrados = usuarios.filter(usuario =>
         usuario.nombre.toLowerCase().includes(texto)
     );
 
-    let tabla = document.getElementById("tablaUsuarios");
-
-    tabla.innerHTML="";
-
-    filtrados.forEach(usuario=>{
-
-        tabla.innerHTML += `
-
-        <tr>
-
-        <td>${usuario.id}</td>
-        <td>${usuario.nombre}</td>
-        <td>${usuario.documento}</td>
-        <td>${usuario.correo}</td>
-
-        <td>
-
-        <button
-        class="btn btn-warning btn-sm"
-        onclick="editarUsuario(${usuario.id})">
-
-        Editar
-
-        </button>
-
-        <button
-        class="btn btn-danger btn-sm"
-        onclick="eliminarUsuario(${usuario.id})">
-
-        Eliminar
-
-        </button>
-
-        </td>
-
-        </tr>
-
-        `;
-
-    });
+    renderizarTabla(filtrados);
 
 }
 
-function guardarUsuarios(){
+function limpiarCampos() {
 
-    localStorage.setItem(
-        "usuarios",
-        JSON.stringify(usuarios)
-    );
-
-}
-
-function limpiarCampos(){
-
-    document.getElementById("nombre").value="";
-    document.getElementById("documento").value="";
-    document.getElementById("correo").value="";
+    document.getElementById("nombre").value = "";
+    document.getElementById("documento").value = "";
+    document.getElementById("correo").value = "";
 
 }

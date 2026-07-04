@@ -1,28 +1,44 @@
-let prestamos = JSON.parse(localStorage.getItem("prestamos")) || [];
+const API_PRESTAMOS = "http://localhost:3000/api/prestamos";
 
 mostrarReportes();
 
-function mostrarReportes(){
+function mostrarReportes() {
 
-    let tabla = document.getElementById("tablaReportes");
+    fetch(API_PRESTAMOS)
+        .then(respuesta => respuesta.json())
+        .then(prestamos => {
 
-    tabla.innerHTML = "";
+            let tabla = document.getElementById("tablaReportes");
 
-    prestamos.forEach(prestamo=>{
+            tabla.innerHTML = "";
 
-        tabla.innerHTML += `
+            prestamos.forEach(prestamo => {
 
-        <tr>
+                tabla.innerHTML += `
+                <tr>
+                    <td>${prestamo.id}</td>
+                    <td>${prestamo.usuario}</td>
+                    <td>${prestamo.libro}</td>
+                    <td>${formatearFecha(prestamo.fechaPrestamo)}</td>
+                    <td>${prestamo.estado}</td>
+                </tr>
+                `;
 
-        <td>${prestamo.id}</td>
-        <td>${prestamo.usuario}</td>
-        <td>${prestamo.libro}</td>
-        <td>${prestamo.fecha}</td>
-        <td>${prestamo.estado}</td>
+            });
 
-        </tr>
+        })
+        .catch(error => {
+            console.log("Error al obtener reportes:", error);
+        });
 
-        `;
-    });
+}
+
+function formatearFecha(fecha) {
+
+    if (!fecha) return "-";
+
+    let partes = fecha.slice(0, 10).split("-");
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
 
 }
