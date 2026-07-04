@@ -112,7 +112,7 @@ function mostrarPrestamos() {
             prestamos.forEach(prestamo => {
 
                 let botonAccion = prestamo.estado === "Prestado"
-                    ? `<button class="btn btn-editar btn-sm" onclick="devolverLibro(${prestamo.id})">Devolver</button>`
+                    ? `<button class="btn btn-editar btn-sm" onclick="abrirModalDevolucion(${prestamo.id})">Devolver</button>`
                     : `<span class="text-muted">—</span>`;
 
                 tabla.innerHTML += `
@@ -135,16 +135,33 @@ function mostrarPrestamos() {
 
 }
 
-function devolverLibro(id) {
+let idPrestamoActual = null;
 
-    fetch(`${API_PRESTAMOS}/${id}`, {
+function abrirModalDevolucion(id) {
+
+    idPrestamoActual = id;
+
+    let modal = new bootstrap.Modal(document.getElementById("modalConfirmarDevolucion"));
+
+    modal.show();
+
+}
+
+function confirmarDevolucion() {
+
+    fetch(`${API_PRESTAMOS}/${idPrestamoActual}`, {
         method: "PUT"
     })
         .then(respuesta => respuesta.json())
         .then(() => {
+
             mostrarPrestamos();
             cargarLibros();
-            alert("Libro devuelto correctamente");
+
+            let modal = bootstrap.Modal.getInstance(document.getElementById("modalConfirmarDevolucion"));
+
+            modal.hide();
+
         })
         .catch(error => {
             console.log("Error al devolver libro:", error);

@@ -415,3 +415,62 @@ h1, h2, h3, .titulo-pagina {
     }
 
 }
+
+/* ===== LOGIN ===== */
+
+.login-body {
+    background: linear-gradient(135deg, var(--azul-oscuro), var(--azul-medio));
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 40px 32px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+
+.login-brand {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.login-icon {
+    display: inline-flex;
+    width: 64px;
+    height: 64px;
+    font-size: 30px;
+    background: rgba(30,86,160,0.1);
+    margin-bottom: 16px;
+}
+
+.login-titulo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--azul-oscuro);
+    margin-bottom: 4px;
+}
+
+.login-subtitulo {
+    font-size: 14px;
+    color: #6B7688;
+    margin-bottom: 0;
+}
+
+.login-mensaje {
+    text-align: center;
+    color: #C0392B;
+    font-size: 14px;
+    margin: 16px 0 0;
+    min-height: 20px;
+}
