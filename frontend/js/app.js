@@ -7,6 +7,14 @@ function cerrarSesion(){
     window.location.href="login.html";
 }
 
+function mostrarAlerta(mensaje) {
+
+    document.getElementById("mensajeAlerta").innerText = mensaje;
+    let modal = new bootstrap.Modal(document.getElementById("modalAlerta"));
+    modal.show();
+
+}
+
 let libros = JSON.parse(localStorage.getItem("libros")) || [];
 let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 

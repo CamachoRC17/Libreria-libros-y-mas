@@ -21,6 +21,8 @@ function agregarLibro() {
         return;
     }
 
+    
+
     let libro = { titulo, autor, categoria, anio };
 
     fetch(API_URL, {
