@@ -474,3 +474,20 @@ h1, h2, h3, .titulo-pagina {
     margin: 16px 0 0;
     min-height: 20px;
 }
+
+.nav-icon {
+    font-size: 18px;
+    width: 22px;
+    text-align: center;
+    display: inline-block;
+}
+
+.brand-icon-badge i,
+.icon-badge i {
+    font-size: inherit;
+}
+
+.titulo-pagina i {
+    margin-right: 10px;
+    color: var(--azul-brillante);
+}
