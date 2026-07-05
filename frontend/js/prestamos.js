@@ -78,7 +78,7 @@ function realizarPrestamo() {
     let idLibro = document.getElementById("libro").value;
 
     if (idUsuario === "" || idLibro === "") {
-        alert("No hay libros disponibles o usuarios registrados");
+        mostrarAlerta("No hay libros disponibles o usuarios registrados");
         return;
     }
 
@@ -91,7 +91,7 @@ function realizarPrestamo() {
         .then(() => {
             mostrarPrestamos();
             cargarLibros();
-            alert("Préstamo registrado");
+            mostrarAlerta("Préstamo registrado");
         })
         .catch(error => {
             console.log("Error al crear préstamo:", error);

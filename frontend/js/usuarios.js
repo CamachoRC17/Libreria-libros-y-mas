@@ -11,7 +11,24 @@ function agregarUsuario() {
     let correo = document.getElementById("correo").value;
 
     if (nombre === "" || documento === "" || correo === "") {
-        alert("Complete todos los campos");
+        mostrarAlerta("Complete todos los campos");
+        return;
+    }
+
+    if (!/^[0-9]{6,12}$/.test(documento)) {
+        mostrarAlerta("El documento debe tener solo números, entre 6 y 12 dígitos");
+        return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+        mostrarAlerta("Ingrese un correo electrónico válido");
+        return;
+    }
+
+    let correoRepetido = usuarios.some(u => u.correo.toLowerCase() === correo.toLowerCase());
+
+    if (correoRepetido) {
+        mostrarAlerta("Ya existe un usuario registrado con ese correo");
         return;
     }
 
@@ -73,7 +90,26 @@ function guardarEdicionUsuario() {
     let correo = document.getElementById("editCorreo").value;
 
     if (nombre === "" || documento === "" || correo === "") {
-        alert("Complete todos los campos");
+        mostrarAlerta("Complete todos los campos");
+        return;
+    }
+
+    if (!/^[0-9]{6,12}$/.test(documento)) {
+        mostrarAlerta("El documento debe tener solo números, entre 6 y 12 dígitos");
+        return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+        mostrarAlerta("Ingrese un correo electrónico válido");
+        return;
+    }
+
+    let correoRepetido = usuarios.some(u =>
+        u.correo.toLowerCase() === correo.toLowerCase() && u.id != id
+    );
+
+    if (correoRepetido) {
+        mostrarAlerta("Ya existe un usuario registrado con ese correo");
         return;
     }
 

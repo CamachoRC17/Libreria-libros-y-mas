@@ -17,11 +17,14 @@ function agregarLibro() {
         categoria === "" ||
         anio === ""
     ) {
-        alert("Complete todos los campos");
+        mostrarAlerta("Complete todos los campos");
         return;
     }
 
-    
+    if (anio.length !== 4 || anio < 1000 || anio > 2100) {
+        mostrarAlerta("El año debe tener 4 dígitos y estar entre 1000 y 2100");
+        return;
+    }
 
     let libro = { titulo, autor, categoria, anio };
 
@@ -178,6 +181,7 @@ function buscarLibro() {
     renderizarTabla(filtrados);
 
 }
+
 
 function limpiarCampos() {
 

@@ -7,21 +7,24 @@ const obtenerPrestamos = (req, res) => {
     SELECT
         prestamos.id,
         prestamos.idUsuario,
-        prestamos.idLibro,
+        prestamos.idEjemplar,
         usuarios.nombre AS usuario,
-        libros.titulo AS libro,
+        titulos.titulo AS libro,
+        ejemplares.codigo AS codigoEjemplar,
         prestamos.fechaPrestamo,
         prestamos.fechaDevolucion,
         prestamos.estado
     FROM prestamos
     INNER JOIN usuarios ON prestamos.idUsuario = usuarios.id
-    INNER JOIN libros ON prestamos.idLibro = libros.id
+    INNER JOIN ejemplares ON prestamos.idEjemplar = ejemplares.id
+    INNER JOIN titulos ON ejemplares.id_titulo = titulos.id
     ORDER BY prestamos.id DESC
     `;
 
     conexion.query(sql, (error, resultados) => {
 
         if (error) {
+            console.log("Error al obtener préstamos:", error);
             return res.status(500).json(error);
         }
 
@@ -31,35 +34,36 @@ const obtenerPrestamos = (req, res) => {
 
 };
 
-// se crea un préstamo
+// Crear un préstamo
 const crearPrestamo = (req, res) => {
 
-    const { idUsuario, idLibro } = req.body;
+    const { idUsuario, idEjemplar } = req.body;
 
     const fechaHoy = new Date().toISOString().slice(0, 10);
 
     const sqlInsertar = `
     INSERT INTO prestamos
-    (idUsuario, idLibro, fechaPrestamo, fechaDevolucion, estado)
+    (idUsuario, idEjemplar, fechaPrestamo, fechaDevolucion, estado)
     VALUES (?, ?, ?, NULL, 'Prestado')
     `;
 
     conexion.query(
         sqlInsertar,
-        [idUsuario, idLibro, fechaHoy],
+        [idUsuario, idEjemplar, fechaHoy],
         (error) => {
 
             if (error) {
+                console.log("Error al crear préstamo:", error);
                 return res.status(500).json(error);
             }
 
-            // Al crear el préstamo, ya se marca el libro como "Prestado"
-            const sqlActualizarLibro =
-            "UPDATE libros SET estado = 'Prestado' WHERE id = ?";
+            const sqlActualizarEjemplar =
+            "UPDATE ejemplares SET estado = 'Prestado' WHERE id = ?";
 
-            conexion.query(sqlActualizarLibro, [idLibro], (error2) => {
+            conexion.query(sqlActualizarEjemplar, [idEjemplar], (error2) => {
 
                 if (error2) {
+                    console.log("Error al actualizar ejemplar:", error2);
                     return res.status(500).json(error2);
                 }
 
@@ -74,18 +78,19 @@ const crearPrestamo = (req, res) => {
 
 };
 
-// Cuando se devulve un libro (marcar préstamo como devuelto)
+// Devolver un libro (marcar préstamo como devuelto)
 const devolverPrestamo = (req, res) => {
 
     const { id } = req.params;
 
     const fechaHoy = new Date().toISOString().slice(0, 10);
 
-    const sqlBuscar = "SELECT idLibro FROM prestamos WHERE id = ?";
+    const sqlBuscar = "SELECT idEjemplar FROM prestamos WHERE id = ?";
 
     conexion.query(sqlBuscar, [id], (error, resultados) => {
 
         if (error) {
+            console.log("Error al buscar préstamo:", error);
             return res.status(500).json(error);
         }
 
@@ -93,7 +98,7 @@ const devolverPrestamo = (req, res) => {
             return res.status(404).json({ mensaje: "Préstamo no encontrado" });
         }
 
-        const idLibro = resultados[0].idLibro;
+        const idEjemplar = resultados[0].idEjemplar;
 
         const sqlActualizarPrestamo = `
         UPDATE prestamos
@@ -104,15 +109,17 @@ const devolverPrestamo = (req, res) => {
         conexion.query(sqlActualizarPrestamo, [fechaHoy, id], (error2) => {
 
             if (error2) {
+                console.log("Error al actualizar préstamo:", error2);
                 return res.status(500).json(error2);
             }
 
-            const sqlActualizarLibro =
-            "UPDATE libros SET estado = 'Disponible' WHERE id = ?";
+            const sqlActualizarEjemplar =
+            "UPDATE ejemplares SET estado = 'Disponible' WHERE id = ?";
 
-            conexion.query(sqlActualizarLibro, [idLibro], (error3) => {
+            conexion.query(sqlActualizarEjemplar, [idEjemplar], (error3) => {
 
                 if (error3) {
+                    console.log("Error al actualizar ejemplar:", error3);
                     return res.status(500).json(error3);
                 }
 
