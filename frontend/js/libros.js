@@ -106,22 +106,36 @@ function guardarEdicionLibro() {
 
 }
 
+let idLibroAEliminar = null;
+
 function eliminarLibro(id) {
 
-    if (confirm("¿Eliminar libro?")) {
+    idLibroAEliminar = id;
 
-        fetch(`${API_URL}/${id}`, {
-            method: "DELETE"
+    let modal = new bootstrap.Modal(document.getElementById("modalConfirmarEliminarLibro"));
+
+    modal.show();
+
+}
+
+function confirmarEliminarLibro() {
+
+    fetch(`${API_URL}/${idLibroAEliminar}`, {
+        method: "DELETE"
+    })
+        .then(respuesta => respuesta.json())
+        .then(() => {
+
+            mostrarLibros();
+
+            let modal = bootstrap.Modal.getInstance(document.getElementById("modalConfirmarEliminarLibro"));
+
+            modal.hide();
+
         })
-            .then(respuesta => respuesta.json())
-            .then(() => {
-                mostrarLibros();
-            })
-            .catch(error => {
-                console.log("Error al eliminar libro:", error);
-            });
-
-    }
+        .catch(error => {
+            console.log("Error al eliminar libro:", error);
+        });
 
 }
 

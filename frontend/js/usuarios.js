@@ -98,22 +98,36 @@ function guardarEdicionUsuario() {
 
 }
 
+let idUsuarioAEliminar = null;
+
 function eliminarUsuario(id) {
 
-    if (confirm("¿Eliminar usuario?")) {
+    idUsuarioAEliminar = id;
 
-        fetch(`${API_URL}/${id}`, {
-            method: "DELETE"
+    let modal = new bootstrap.Modal(document.getElementById("modalConfirmarEliminarUsuario"));
+
+    modal.show();
+
+}
+
+function confirmarEliminarUsuario() {
+
+    fetch(`${API_URL}/${idUsuarioAEliminar}`, {
+        method: "DELETE"
+    })
+        .then(respuesta => respuesta.json())
+        .then(() => {
+
+            mostrarUsuarios();
+
+            let modal = bootstrap.Modal.getInstance(document.getElementById("modalConfirmarEliminarUsuario"));
+
+            modal.hide();
+
         })
-            .then(respuesta => respuesta.json())
-            .then(() => {
-                mostrarUsuarios();
-            })
-            .catch(error => {
-                console.log("Error al eliminar usuario:", error);
-            });
-
-    }
+        .catch(error => {
+            console.log("Error al eliminar usuario:", error);
+        });
 
 }
 
