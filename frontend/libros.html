@@ -55,24 +55,28 @@
 
         <div class="row g-3">
 
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <input type="text" id="titulo" class="form-control" placeholder="Título">
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <input type="text" id="autor" class="form-control" placeholder="Autor">
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <input type="text" id="categoria" class="form-control" placeholder="Categoría">
             </div>
 
             <div class="col-md-2">
-                <input type="number" id="anio" class="form-control" placeholder="Año">
+                <input type="number" id="anio" class="form-control" placeholder="Año" min="1000" max="2100">
             </div>
 
-            <div class="col-md-1">
-                <button class="btn btn-agregar w-100" onclick="agregarLibro()">+</button>
+            <div class="col-md-2">
+                <input type="text" id="isbn" class="form-control" placeholder="ISBN (opcional)">
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-agregar w-100" onclick="agregarTitulo()">+ Agregar</button>
             </div>
 
         </div>
@@ -80,9 +84,10 @@
     </div>
 
     <div class="buscador-wrapper">
-        <input type="text" id="buscar" class="form-control" placeholder="Buscar libro..." onkeyup="buscarLibro()">
+        <input type="text" id="buscar" class="form-control" placeholder="Buscar libro..." onkeyup="buscarTitulo()">
     </div>
 
+    <!-- Modal Editar Título -->
     <div class="modal fade" id="modalEditarLibro" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -113,20 +118,26 @@
 
                     <div class="mb-3">
                         <label class="form-label">Año</label>
-                        <input type="number" id="anio" class="form-control" placeholder="Año" min="1000" max="2100">
+                        <input type="number" id="editAnio" class="form-control" min="1000" max="2100">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">ISBN</label>
+                        <input type="text" id="editIsbn" class="form-control">
                     </div>
 
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-agregar" onclick="guardarEdicionLibro()">Guardar cambios</button>
+                    <button type="button" class="btn btn-agregar" onclick="guardarEdicionTitulo()">Guardar cambios</button>
                 </div>
 
             </div>
         </div>
     </div>
 
+    <!-- Modal Confirmar Eliminar Título -->
     <div class="modal fade" id="modalConfirmarEliminarLibro" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -142,34 +153,58 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-eliminar" onclick="confirmarEliminarLibro()">Eliminar</button>
+                    <button type="button" class="btn btn-eliminar" onclick="confirmarEliminarTitulo()">Eliminar</button>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <div class="card-panel">
+    <!-- Modal Gestionar Ejemplares -->
+    <div class="modal fade" id="modalEjemplares" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
 
-        <div class="table-responsive">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ejemplares de: <span id="nombreTituloEjemplares"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
 
-            <table class="table tabla-datos">
+                <div class="modal-body">
 
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Título</th>
-                        <th>Autor</th>
-                        <th>Categoría</th>
-                        <th>Año</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
+                    <div class="row g-2 mb-3">
 
-                <tbody id="tablaLibros"></tbody>
+                        <div class="col-md-8">
+                            <input type="text" id="nuevoCodigoEjemplar" class="form-control" placeholder="Código del ejemplar (ej. EJ-0005)">
+                        </div>
 
-            </table>
+                        <div class="col-md-4">
+                            <button class="btn btn-agregar w-100" onclick="agregarEjemplarModal()">+ Agregar copia</button>
+                        </div>
+
+                    </div>
+
+                    <table class="table tabla-datos">
+
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tablaEjemplaresModal"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+
+            </div>
         </div>
     </div>
 
@@ -191,6 +226,30 @@
                 </div>
 
             </div>
+        </div>
+    </div>
+
+    <div class="card-panel">
+
+        <div class="table-responsive">
+
+            <table class="table tabla-datos">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Categoría</th>
+                        <th>Año</th>
+                        <th>Ejemplares</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tablaLibros"></tbody>
+
+            </table>
         </div>
     </div>
 

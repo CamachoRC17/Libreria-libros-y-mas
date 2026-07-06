@@ -1,9 +1,11 @@
 const API_USUARIOS = "http://localhost:3000/api/usuarios";
-const API_LIBROS = "http://localhost:3000/api/libros";
+const API_TITULOS = "http://localhost:3000/api/titulos";
 const API_PRESTAMOS = "http://localhost:3000/api/prestamos";
 
+let titulosDisponibles = [];
+
 cargarUsuarios();
-cargarLibros();
+cargarTitulos();
 mostrarPrestamos();
 
 function cargarUsuarios() {
@@ -31,19 +33,19 @@ function cargarUsuarios() {
 
 }
 
-function cargarLibros() {
+function cargarTitulos() {
 
-    fetch(API_LIBROS)
+    fetch(API_TITULOS)
         .then(respuesta => respuesta.json())
-        .then(libros => {
+        .then(titulos => {
+
+            titulosDisponibles = titulos.filter(t => t.disponibles > 0);
 
             let select = document.getElementById("libro");
 
             select.innerHTML = "";
 
-            let disponibles = libros.filter(libro => libro.estado === "Disponible");
-
-            if (disponibles.length === 0) {
+            if (titulosDisponibles.length === 0) {
 
                 select.innerHTML = `
                 <option value="">No hay libros disponibles para prestar</option>
@@ -55,10 +57,10 @@ function cargarLibros() {
 
                 select.disabled = false;
 
-                disponibles.forEach(libro => {
+                titulosDisponibles.forEach(titulo => {
                     select.innerHTML += `
-                    <option value="${libro.id}">
-                        ${libro.titulo}
+                    <option value="${titulo.id}">
+                        ${titulo.titulo} (${titulo.disponibles} disponibles)
                     </option>
                     `;
                 });
@@ -67,7 +69,7 @@ function cargarLibros() {
 
         })
         .catch(error => {
-            console.log("Error al cargar libros:", error);
+            console.log("Error al cargar títulos:", error);
         });
 
 }
@@ -75,22 +77,35 @@ function cargarLibros() {
 function realizarPrestamo() {
 
     let idUsuario = document.getElementById("usuario").value;
-    let idLibro = document.getElementById("libro").value;
+    let idTitulo = document.getElementById("libro").value;
 
-    if (idUsuario === "" || idLibro === "") {
+    if (idUsuario === "" || idTitulo === "") {
         mostrarAlerta("No hay libros disponibles o usuarios registrados");
         return;
     }
 
-    fetch(API_PRESTAMOS, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idUsuario, idLibro })
-    })
+    fetch(`http://localhost:3000/api/ejemplares/titulo/${idTitulo}`)
+        .then(respuesta => respuesta.json())
+        .then(ejemplares => {
+
+            let ejemplarDisponible = ejemplares.find(e => e.estado === "Disponible");
+
+            if (!ejemplarDisponible) {
+                mostrarAlerta("No hay ejemplares disponibles de este título");
+                return;
+            }
+
+            return fetch(API_PRESTAMOS, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idUsuario, idEjemplar: ejemplarDisponible.id })
+            });
+
+        })
         .then(respuesta => respuesta.json())
         .then(() => {
             mostrarPrestamos();
-            cargarLibros();
+            cargarTitulos();
             mostrarAlerta("Préstamo registrado");
         })
         .catch(error => {
@@ -119,7 +134,7 @@ function mostrarPrestamos() {
                 <tr>
                     <td data-label="ID">${prestamo.id}</td>
                     <td data-label="Usuario">${prestamo.usuario}</td>
-                    <td data-label="Libro">${prestamo.libro}</td>
+                    <td data-label="Libro">${prestamo.libro} (${prestamo.codigoEjemplar})</td>
                     <td data-label="Fecha">${formatearFecha(prestamo.fechaPrestamo)}</td>
                     <td data-label="Estado">${prestamo.estado}</td>
                     <td data-label="Acción">${botonAccion}</td>
@@ -156,7 +171,7 @@ function confirmarDevolucion() {
         .then(() => {
 
             mostrarPrestamos();
-            cargarLibros();
+            cargarTitulos();
 
             let modal = bootstrap.Modal.getInstance(document.getElementById("modalConfirmarDevolucion"));
 
