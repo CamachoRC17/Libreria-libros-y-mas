@@ -10,31 +10,40 @@ function iniciarSesion() {
         return;
     }
 
-    fetch(API_LOGIN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usuario, password })
-    })
-        .then(respuesta => {
+    grecaptcha.ready(() => {
 
-            if (!respuesta.ok) {
-                throw new Error("Credenciales incorrectas");
-            }
+        grecaptcha.execute("6LeeFkgtAAAAAKVwtO3GWvqHXySPQf4WbxoXlgiL", { action: "login" })
+            .then(captcha => {
 
-            return respuesta.json();
+                fetch(API_LOGIN, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ usuario, password, captcha })
+                })
+                    .then(respuesta => {
 
-        })
-        .then(() => {
+                        if (!respuesta.ok) {
+                            throw new Error("Credenciales incorrectas");
+                        }
 
-            localStorage.setItem("sesion", "activa");
+                        return respuesta.json();
 
-            window.location.href = "index.html";
+                    })
+                    .then(() => {
 
-        })
-        .catch(error => {
+                        localStorage.setItem("sesion", "activa");
 
-            document.getElementById("mensaje").innerHTML = "Usuario o contraseña incorrectos";
+                        window.location.href = "index.html";
 
-        });
+                    })
+                    .catch(error => {
+
+                        document.getElementById("mensaje").innerHTML = "Usuario o contraseña incorrectos";
+
+                    });
+
+            });
+
+    });
 
 }

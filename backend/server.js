@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 
 const librosRoutes = require("./routes/libros");
 const usuariosRoutes = require("./routes/usuarios");
