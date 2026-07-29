@@ -23,7 +23,7 @@ function cargarEstadisticas() {
     fetch(API_LIBROS)
         .then(respuesta => respuesta.json())
         .then(libros => {
-            document.getElementById("totalLibros").innerHTML = libros.length;
+            document.getElementById("totalLibros").textContent = data.totalLibros ?? "Sin registros";
         })
         .catch(error => {
             console.log("Error al cargar libros:", error);
