@@ -52,9 +52,10 @@ CREATE TABLE admins(
 );
 
 -- Usuario administrador por defecto (usuario: admin, contraseña: 12345)
+-- ⚠️ Cambia el correo y la contraseña antes de usar en producción
 INSERT INTO admins (usuario, password, correo)
 VALUES (
     'admin',
     '$2b$10$CMNs9vWpSvaxfgYPJXeBa.yh62EnGX12cr5cTmNW9Qsu9SpxY3LpG',
-    'ronalddelportillo11@gmail.com'
+    'admin@ejemplo.com'
 );
