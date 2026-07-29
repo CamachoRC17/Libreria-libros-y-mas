@@ -58,6 +58,13 @@ Luego edita `backend/.env` con tus propios valores:
 RECAPTCHA_SECRET=tu_clave_secreta_de_recaptcha
 EMAIL_USUARIO=tu_correo@gmail.com
 EMAIL_CLAVE=tu_contraseña_de_aplicacion_de_gmail
+
+EJ: 
+
+RECAPTCHA_SECRET=6LeeFkgtAAAAAIyB-18vHAwYw5BwL2Hi18tCVUCS
+EMAIL_USUARIO=ronalddelportillo11@gmail.com
+EMAIL_CLAVE=oenqpujqzfdwkkiu
+
 ```
 
 > ⚠️ **Nunca subas tu archivo `.env` real a GitHub.** Cada persona debe generar sus propias claves y contraseña de aplicación.
